@@ -1,5 +1,12 @@
 package com.freestack.evaluation;
 
+import com.freestack.evaluation.models.Booking;
+import com.freestack.evaluation.models.UberDriver;
+import com.freestack.evaluation.models.UberUser;
+import com.freestack.evaluation.api.UberApi;
+
+import java.util.List;
+
 public class Main {
 
     public static void main(String[] args) {
@@ -25,7 +32,7 @@ public class Main {
         UberApi.evaluateDriver(booking1, evaluationOfTheUser);
 
         List<Booking> bookings = UberApi.listDriverBookings(uberDriver);
-        if (bookings.size() != 2) throw new AssertionError();
+        if (bookings.size() != 1) throw new AssertionError();
         if (!bookings.get(0).getScore().equals(evaluationOfTheUser)) throw new AssertionError();
 
         Booking booking3 = UberApi.bookOneDriver(uberUser2);
@@ -34,7 +41,7 @@ public class Main {
         List<Booking> unfinishedBookings = UberApi.listUnfinishedBookings();
         if (unfinishedBookings.size() != 1) throw new AssertionError("only booking3 should be unfinished");
 
-        float meanScore = UberApi.meanScore(uberDriver);
+        Double meanScore = UberApi.meanScore(uberDriver);
         if (meanScore != 5) throw new AssertionError("one eval of 5 should give a mean of 5");
     }
 }
