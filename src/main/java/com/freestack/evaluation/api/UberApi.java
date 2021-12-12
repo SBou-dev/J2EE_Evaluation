@@ -54,7 +54,9 @@ public class UberApi {
         Booking booking = new Booking();
         // Récupère la liste de tous les drivers libres
         List<UberDriver> drivers = new ArrayList<>();
-        drivers = em.createQuery("Select d FROM UberDriver d WHERE d.available = true").getResultList();
+        //on en a besoin que d'un , et sur une vraie db cela engendrerait des dizaines voire des centaines d'instanciations de uberdrivers inutiles
+        drivers = (List<UberDriver>) em.createQuery("SELECT u From UberDriver u WHERE u.available = true").setMaxResults(1).getResultList();
+        
         if(drivers.isEmpty()) {
             // Si pas de drivers libre renvoyer null
             return null;
@@ -84,9 +86,7 @@ public class UberApi {
         Booking booking = (Booking) em.createQuery("Select b FROM Booking b WHERE b.id = :id")
                 .setParameter("id", booking1.getId()).getSingleResult();
         booking.setEndOfTheBooking(Instant.now());
-        UberDriver driver = (UberDriver) em.createQuery("Select d FROM UberDriver d WHERE d.id = :id")
-                .setParameter("id", booking1.getDriver().getId())
-                .getSingleResult();
+        UberDriver driver = booking.getDriver()
         driver.setAvailable();
 
         em.getTransaction().commit();
